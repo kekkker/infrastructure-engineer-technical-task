@@ -12,3 +12,6 @@ For more production-like purposes, you can build the application using the follo
  1. `npm run build`
  2. Built files output to `./build` directory
  3. Run `node build/index.js` to run the Express server
+
+Builing container image
+1. `docker build -t sisu-app .`
