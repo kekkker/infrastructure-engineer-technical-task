@@ -35,7 +35,7 @@ Use whatever mechanism/tools you think are appropriate/relevant to deploy the ap
 
 NOTE: This pipeline does not have to be fully active. All we're looking for is the YAML file. Minor syntax errors will be overlooked.
 
-### 3. Infrastructure as Code
+### 3. Infrastructure as Code +
  - :arrow_forward: Terraform **CDK in TypeScript** https://developer.hashicorp.com/terraform/cdktf
 
 Create some Infrastructure as Code resources to deploy an Google Cloud Kubernetes Engine and an Cloud SQL database to some Google Cloud account.
@@ -51,10 +51,26 @@ Other configuration can be decided by yourself, based on the instance being used
 ## Questions
 
  1. How long did you spend on this assessment in total?\
- _
+ About 1.5h, but the most optimized solution that follows all the best practices will take much longer.
 
  2. What was the most difficult task?\
- _
+ Creating a new GCP account (joke :D). Getting familiar with the Terraform CDK TS abstractions.
 
  3. If you had an unlimited amount of time to complete this task, what would you have done differently?\
- _
+
+Application and a Dockerfile:
+  1. Divided NPM packages to build and runtime only, so it can benefit from the Multistage Dockerfile.
+
+CI/CD:
+  1. Used ArgoEvents to trigger a workflow every new commit
+  2. Used external secrets to define secrets such as tokens, etc in manifests
+  3. Converted workflow into a template, so not only master is being built and pushed
+  4. CI for the manifests and code
+
+Kubernetes manifests:
+  1. Used Kustomize or Helm to be able to deploy different environments
+  2. Used an ingress with TLS instead of a regular service on port 80
+
+Infra:
+  1. Converted all the parts of infra to a modules, which can be reused across mulitple environments
+  2. Stored all the state remotely
