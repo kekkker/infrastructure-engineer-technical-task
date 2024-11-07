@@ -1,12 +1,15 @@
+---
 kind: Service
 apiVersion: v1
 metadata:
-  name: express
+  name: express-service
 spec:
+  type: LoadBalancer
   selector:
     app: express
   ports:
-  - protocol: TCP
-       port : 80
-       targetPort : 3000
-    type : LoadBalancer
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: 3000
+

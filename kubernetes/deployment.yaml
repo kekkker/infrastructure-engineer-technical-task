@@ -1,21 +1,46 @@
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-    name: express-deployment
-    labels:
-        app: express
+  name: express-deployment
+  labels:
+    app: express
 spec:
-    replicas: 2
-    selector:
-        matchLabels:
-            app: express
-    template:
-        metadata:
-            labels:
-                app: express
-        spec:
-            containers:
-                - name: express
-                  image: europe-north1-docker.pkg.dev/sisu-tech/docker-registry/express:latest
-                  ports:
-                      - containerPort: 3000
+  replicas: 2
+  selector:
+    matchLabels:
+      app: express
+  template:
+    metadata:
+      labels:
+        app: express
+    spec:
+      containers:
+        - name: express
+          imagePullPolicy: Always
+          image: gcr.io/strange-ratio-261220/application:main
+          ports:
+            - containerPort: 3000
+          resources:
+            limits:
+              memory: "256Mi"
+              cpu: "200m"
+            requests:
+              memory: "100Mi"
+              cpu: "100m"
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+          securityContext:
+            allowPrivilegeEscalation: false
+            privileged: false
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            capabilities:
+              drop:
+                - ALL

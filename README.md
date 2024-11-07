@@ -20,10 +20,10 @@ If you have any questions about this process, please speak to your recruitment c
 
 ## Tasks
 
-### 1. Docker
+### 1. Docker +
 A basic TypeScript application has been created in the `application` folder. Create a Dockerfile to build this application, making sure that it runs on your local device.
 
-### 2. CI/CD
+### 2. CI/CD +
  - :arrow_forward: Github Actions
  - :arrow_forward: Argo Workflows
 

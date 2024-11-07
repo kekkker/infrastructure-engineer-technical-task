@@ -1,0 +1,51 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Workflow
+metadata:
+  generateName: app-build-
+spec:
+  entrypoint: main
+  templates:
+    - name: main
+      volumes:
+        - name: src
+          emptyDir: {}
+        - name: registry-secrets
+          secret:
+            secretName: registry-secrets
+        - name: kubectl-config
+          secret:
+            secretName: kubectl-config
+      inputs:
+        artifacts:
+          - name: source
+            path: /src
+            git:
+              repo: "git@github.com:kekkker/infrastructure-engineer-technical-task.git"
+              revision: "{{inputs.params.revision}}"
+              sshPrivateKeySecret:
+                name: github-creds
+                key: ssh-private-key
+        parameters:
+          - name: revision
+            default: "main"
+      containers:
+        - name: container-image-build
+          image: gcr.io/kaniko-project/executor:debug
+          command: ["/kaniko/executor"]
+          args:
+            - "--context=/src/application"
+            - "--destination=gcr.io/strange-ratio-261220/application:{{inputs.params.revision}}"
+          volumeMounts:
+            - name: src
+              mountPath: /src
+            - name: registry-secrets
+              mountPath: /kaniko/.docker
+        - name: kubectl-apply
+          image: registry.k8s.io/kubectl:v1.31.1
+          args: ["--kubeconfig /secrets/kubeconfig apply -f /src/kubernetes"]
+          volumeMounts:
+            - name: src
+              mountPath: /src
+            - name: kubectl-config
+              mountPath: /secrets
